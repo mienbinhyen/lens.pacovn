@@ -836,7 +836,8 @@ function vkScrollProducts(button, direction) {
      Muốn đổi màu/kích thước: sửa CSS bên dưới
      ========================================================= -->
 
-<div class="vk-category-tabs">
+
+<div class="vk-category-tabs" id="sanpham">
 
     <button class="vk-category-btn active" data-category="lens-mau">
         Lens màu
@@ -1144,6 +1145,11 @@ document.querySelectorAll('.vk-category-btn').forEach(function(button) {
     });
 });
 
+
+/* MẶC ĐỊNH HIỂN THỊ DANH MỤC ĐẦU TIÊN */
+vkRenderCategory('lens-mau');
+
+
 </script>
 
 
@@ -1153,6 +1159,196 @@ document.querySelectorAll('.vk-category-btn').forEach(function(button) {
 
 
 
+<!-- =========================================================
+POPUP CHI TIẾT SẢN PHẨM VK LENS
+ĐẶT NGUYÊN KHỐI NÀY NGAY DƯỚI KHỐI DANH MỤC SẢN PHẨM
+
+TỶ LỆ:
+- 50%: ẢNH VUÔNG
+- 10%: TÊN + MÃ + 2 NÚT
+- 40%: NỘI DUNG + THÔNG SỐ
+
+POPUP BÌNH THƯỜNG ẨN
+CHỈ HIỆN KHI BẤM "XEM THÊM"
+========================================================= -->
+
+<div id="vk-detail-popup" class="vk-detail-overlay"><div class="vk-detail-box"><div class="vk-detail-image"><img id="vk-detail-img" src="" alt=""></div><div class="vk-detail-actions"><div class="vk-detail-name"><b id="vk-detail-name"></b><span id="vk-detail-code"></span></div><div class="vk-detail-buttons"><button type="button" onclick="vkCloseDetail()">← Quay lại</button><button type="button" class="vk-detail-cart" onclick="vkDetailAddCart()">Thêm vào giỏ</button></div></div><div class="vk-detail-info"><h3>THÔNG TIN SẢN PHẨM</h3><div id="vk-detail-content"></div></div></div></div>
+
+<style>
+.vk-detail-overlay{display:none;position:fixed;inset:0;z-index:200000;background:rgba(0,0,0,.62);align-items:center;justify-content:center;padding:8px}
+.vk-detail-overlay.active{display:flex}
+.vk-detail-box{--vk-pop-w:min(94vw,46vh,500px);width:var(--vk-pop-w);height:calc(var(--vk-pop-w) * 2);max-height:92vh;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.30);display:grid;grid-template-rows:50% 10% 40%;font-family:'Times New Roman',serif}
+.vk-detail-image{width:100%;height:100%;background:#fff;overflow:hidden}
+.vk-detail-image img{width:100%;height:100%;object-fit:cover;display:block}
+.vk-detail-actions{padding:5px 9px;border-top:1px solid #eee;border-bottom:1px solid #eee;display:flex;align-items:center;gap:6px}
+.vk-detail-name{flex:1;min-width:0;line-height:1.05}
+.vk-detail-name b{display:block;color:#0056a6;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vk-detail-name span{display:block;margin-top:3px;color:#777;font-size:11px}
+.vk-detail-buttons{display:flex;gap:5px;flex-shrink:0}
+.vk-detail-buttons button{border:1px solid #0062b8;border-radius:18px;padding:6px 9px;background:#fff;color:#0062b8;font-family:'Times New Roman',serif;font-size:11px;font-weight:bold;cursor:pointer;white-space:nowrap}
+.vk-detail-buttons .vk-detail-cart{background:#0062b8;color:#fff}
+.vk-detail-info{padding:10px 14px 14px;overflow-y:auto}
+.vk-detail-info h3{margin:0 0 8px;text-align:center;color:#0056a6;font-size:17px}
+.vk-detail-info .vk-desc{margin:0 0 9px;font-size:13px;line-height:1.35;color:#555}
+.vk-detail-info p{margin:0 0 5px;font-size:13px;line-height:1.28;color:#444}
+.vk-detail-info b{color:#222}
+body.vk-popup-open{overflow:hidden}
+@media(max-width:600px){.vk-detail-box{--vk-pop-w:min(94vw,46vh,430px)}.vk-detail-actions{padding:4px 7px}.vk-detail-name b{font-size:13px}.vk-detail-name span{font-size:10px}.vk-detail-buttons button{padding:5px 7px;font-size:10px}.vk-detail-info{padding:9px 12px 12px}.vk-detail-info h3{font-size:15px}.vk-detail-info .vk-desc,.vk-detail-info p{font-size:12px}}
+</style>
+
+<script>
+/* =========================================================
+DỮ LIỆU CHI TIẾT 43 SẢN PHẨM
+MỖI SẢN PHẨM 1 DÒNG ĐỂ DỄ TÌM
+========================================================= */
+
+const vkDetailProducts={
+
+"PC Brown":{name:"Brown Popular Correct",image:"PCBrown.webp",desc:"Tông nâu tự nhiên, giúp đôi mắt trông sáng và có chiều sâu hơn. Phù hợp phong cách nhẹ nhàng, sử dụng hằng ngày.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> High Quality</p><p><b>Độ cận:</b> 0.00; -0.50 đến -10.00</p><p><b>DIA / B.C:</b> 14.5 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"PC Gray":{name:"Gray Popular Correct",image:"PCGray.webp",desc:"Tông xám hiện đại, tạo ánh nhìn rõ nét nhưng vẫn tự nhiên. Dễ phối với nhiều phong cách trang điểm.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> High Quality</p><p><b>Độ cận:</b> 0.00; -0.75 đến -10.00</p><p><b>DIA / B.C:</b> 14.5 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"PC Green":{name:"Green Popular Correct",image:"PCGreen.webp",desc:"Sắc xanh tạo điểm nhấn khác biệt cho đôi mắt, phù hợp khi muốn thay đổi phong cách hoặc trang điểm nổi bật.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> High Quality</p><p><b>Độ cận:</b> 0.00; -1.00 đến -8.00</p><p><b>DIA / B.C:</b> 14.5 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"PC Blue":{name:"Blue Popular Correct",image:"PCBlue.webp",desc:"Sắc xanh trong trẻo giúp ánh nhìn nổi bật hơn, phù hợp phong cách trẻ trung và các dịp cần tạo điểm nhấn.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> High Quality</p><p><b>Độ cận:</b> 0.00; -1.00 đến -8.00</p><p><b>DIA / B.C:</b> 14.5 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"PC Violet":{name:"Violet Popular Correct",image:"PCViolet.webp",desc:"Sắc tím nhẹ tạo hiệu ứng mới lạ và cá tính cho ánh nhìn, phù hợp trang điểm thời trang và chụp ảnh.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> High Quality</p><p><b>Độ cận:</b> 0.00; -1.00 đến -8.00</p><p><b>DIA / B.C:</b> 14.5 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"BT01 Black":{name:"Black Popular Correct",image:"BT01Black.webp",desc:"Tông đen giúp đồng tử trông rõ và sâu hơn, tạo ánh nhìn sắc nét nhưng vẫn dễ sử dụng hằng ngày.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> High Quality</p><p><b>Độ cận:</b> 0.00; -0.75 đến -10.00</p><p><b>DIA / B.C:</b> 14.5 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Fay Brown":{name:"Brown Grain",image:"FayBrown.webp",desc:"Họa tiết nâu mềm mại tạo chiều sâu tự nhiên cho mắt, phù hợp phong cách nữ tính và trang điểm nhẹ.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> High Quality</p><p><b>DIA / B.C:</b> 14.5 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Fay Gray":{name:"Gray Grain",image:"FayGray.webp",desc:"Họa tiết xám tạo ánh nhìn thanh thoát và hiện đại, phù hợp nhiều kiểu trang điểm từ nhẹ đến sắc nét.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> High Quality</p><p><b>DIA / B.C:</b> 14.5 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"W223 Brown":{name:"Brown Cloud",image:"W223Brown.webp",desc:"Tông nâu mềm và ấm, tạo cảm giác mắt to và dịu hơn. Phù hợp phong cách tự nhiên hằng ngày.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Basic Lens</p><p><b>Độ cận:</b> 0.00; -1.00 đến -6.00</p><p><b>DIA / B.C:</b> 14.8 mm / 8.9 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"W223 Gray":{name:"Gray Cloud",image:"W223Gray.webp",desc:"Tông xám nhẹ tạo hiệu ứng mắt sáng và rõ hơn, thích hợp phong cách trẻ trung và hiện đại.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Basic Lens</p><p><b>Độ cận:</b> 0.00; -1.00 đến -6.00</p><p><b>DIA / B.C:</b> 14.8 mm / 8.9 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Dark Brown":{name:"Brown Cloud Choco",image:"DarkBrown.webp",desc:"Sắc nâu chocolate trầm giúp đôi mắt có chiều sâu và giữ vẻ tự nhiên, dễ dùng trong nhiều hoàn cảnh.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Basic Lens</p><p><b>Độ cận:</b> 0.00; -1.00 đến -7.50</p><p><b>DIA / B.C:</b> 14.8 mm / 8.9 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"WBK Black":{name:"Black Eye",image:"WBKBlack.webp",desc:"Tông đen rõ nét giúp đôi mắt trông tròn và sâu hơn, phù hợp người thích phong cách đơn giản và tự nhiên.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Basic Lens</p><p><b>Độ cận:</b> 0.00; -1.00 đến -8.00</p><p><b>DIA / B.C:</b> 14.8 mm / 8.9 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Glam Brown":{name:"Brown Pattern",image:"GlamBrown.webp",desc:"Họa tiết nâu tinh tế tạo chiều sâu và điểm nhấn cho ánh nhìn, phù hợp trang điểm tự nhiên hoặc dự tiệc nhẹ.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Luxury Lens</p><p><b>Độ cận:</b> 0.00; -0.50 đến -10.00</p><p><b>DIA:</b> 14.0 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Glam Gray":{name:"Gray Pattern",image:"GlamGray.webp",desc:"Họa tiết xám sang và rõ nét, giúp ánh nhìn có chiều sâu hơn mà không tạo cảm giác quá đậm.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Luxury Lens</p><p><b>Độ cận:</b> 0.00; -0.50 đến -10.00</p><p><b>DIA / B.C:</b> 14.0 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Milky Brown":{name:"Brown Border",image:"MilkyBrown.webp",desc:"Viền nâu mềm tạo hiệu ứng mắt tròn và sáng hơn, giữ vẻ tự nhiên và phù hợp sử dụng thường ngày.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Luxury Lens</p><p><b>Độ cận:</b> 0.00; -0.50 đến -10.00</p><p><b>DIA / B.C:</b> 14.2 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Milky Gray":{name:"Gray Border",image:"MilkyGray.webp",desc:"Viền xám giúp mắt trông rõ và nổi bật hơn, phù hợp phong cách hiện đại nhưng vẫn giữ sự mềm mại.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Luxury Lens</p><p><b>Độ cận:</b> 0.00; -0.50 đến -10.00</p><p><b>DIA / B.C:</b> 14.2 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"G101 Choco":{name:"Choco Glow",image:"G101Choco.webp",desc:"Sắc chocolate sáng tự nhiên, viền mềm giúp ánh nhìn có chiều sâu và nổi bật vừa phải. Phù hợp dùng hằng ngày hoặc trang điểm nhẹ.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Luxury Lens</p><p><b>Độ cận:</b> 0.00; -0.50 đến -10.00</p><p><b>DIA / B.C:</b> 14.0 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Mulan Brown":{name:"Lighter Brown",image:"MulanBrown.webp",desc:"Sắc nâu sáng tạo vẻ mềm mại và trẻ trung cho đôi mắt, dễ phối với phong cách trang điểm tự nhiên.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>DIA / B.C:</b> 14.0 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Elsa Brown":{name:"Brown Lavishly",image:"ElsaBrown.webp",desc:"Tông nâu sang trọng với hiệu ứng rõ nét, tạo chiều sâu cho ánh nhìn và phù hợp nhiều phong cách trang điểm.",info:"<p><b>Giá:</b> 350.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Deluxe Lens</p><p><b>Độ cận:</b> 0.00; -0.50 đến -10.00</p><p><b>DIA / B.C:</b> 14.0 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Elsa Gray":{name:"Gray Lavishly",image:"ElsaGray.webp",desc:"Tông xám sang và thanh thoát, tạo ánh nhìn sắc nét hơn nhưng vẫn cân bằng, phù hợp đi chơi hoặc dự tiệc.",info:"<p><b>Giá:</b> 350.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Deluxe Lens</p><p><b>Độ cận:</b> -1.00 đến -10.00</p><p><b>DIA / B.C:</b> 14.0 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Luna Brown":{name:"Brown Luna",image:"LunaBrown.webp",desc:"Tông nâu dịu với hiệu ứng mềm quanh tròng mắt, tạo vẻ tự nhiên, nữ tính và dễ sử dụng.",info:"<p><b>Giá:</b> 350.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Deluxe Lens</p><p><b>Độ cận:</b> 0.00; -1.00 đến -8.00</p><p><b>DIA / B.C:</b> 14.2 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Luna Gray":{name:"Gray Luna",image:"LunaGray.webp",desc:"Sắc xám nhẹ tạo vẻ thanh thoát và hiện đại, phù hợp trang điểm tự nhiên hoặc phong cách lạnh.",info:"<p><b>Giá:</b> 350.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Deluxe Lens</p><p><b>Độ cận:</b> 0.00; -1.00 đến -8.00</p><p><b>DIA / B.C:</b> 14.2 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+"Mimo Gray":{name:"Gray Mimosa",image:"MimoGray.webp",desc:"Tông xám dịu giúp đôi mắt sáng và có chiều sâu hơn, thích hợp với phong cách trang điểm thanh lịch.",info:"<p><b>Giá:</b> 350.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Deluxe Lens</p><p><b>Độ cận:</b> 0.00; -0.50 đến -10.00</p><p><b>DIA / B.C:</b> 14.0 mm / 8.8 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+
+"Clear Innovation":{name:"Clear Bright",image:"ClearInnovation.webp",desc:"Lens trong suốt dành cho nhu cầu điều chỉnh thị lực mà không thay đổi màu mắt tự nhiên.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Lens trong suốt</p><p><b>Độ cận:</b> -1.00 đến -10.00</p><p><b>DIA / B.C:</b> 14.0 mm / 8.8 mm</p><p><b>Thời hạn:</b> 1 tháng</p>"},
+"Clear Oxy":{name:"Clear Sports",image:"ClearOxy.webp",desc:"Lens trong suốt, giữ màu mắt nguyên bản và phù hợp người ưu tiên thiết kế đơn giản, không màu.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Lens trong suốt</p><p><b>Độ cận:</b> -1.00 đến -10.00</p><p><b>DIA / B.C:</b> 14.0 mm / 8.8 mm</p><p><b>Thời hạn:</b> 3 tháng</p>"},
+"CLEAR (NEW)":{name:"Trong suốt Luxury",image:"CLEARNEW.webp",desc:"Lens trong suốt với dải độ cận rộng, phù hợp người muốn giữ vẻ tự nhiên của mắt.",info:"<p><b>Giá:</b> 300.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Hydrophilic</p><p><b>Độ cận:</b> -0.50 đến -20.00</p><p><b>DIA:</b> 14.2 mm</p><p><b>Thời hạn:</b> 6 tháng</p>"},
+
+"Brown 1day":{name:"Brown Sweeter",image:"Brown1day.webp",desc:"Lens nâu dùng trong ngày, tiện lợi cho những dịp cần thay đổi màu mắt mà không sử dụng dài ngày.",info:"<p><b>Giá:</b> 120.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Soft Lens 1 ngày</p><p><b>Độ cận:</b> 0.00 đến -8.00</p><p><b>DIA / B.C:</b> 14.0 mm / 8.8 mm</p><p><b>Thời hạn:</b> 1 ngày</p>"},
+"Gray 1day":{name:"Gray Sweeter",image:"Gray1day.webp",desc:"Lens xám dùng trong ngày, tạo ánh nhìn hiện đại và tiện lợi cho nhu cầu sử dụng ngắn hạn.",info:"<p><b>Giá:</b> 120.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Soft Lens 1 ngày</p><p><b>Độ cận:</b> 0.00 đến -8.00</p><p><b>DIA / B.C:</b> 14.0 mm / 8.8 mm</p><p><b>Thời hạn:</b> 1 ngày</p>"},
+"Clear 1 day":{name:"Bright Eye",image:"Clear1day.webp",desc:"Lens trong suốt dùng trong ngày, phù hợp nhu cầu ngắn hạn và giữ nguyên màu mắt tự nhiên.",info:"<p><b>Giá:</b> 80.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Soft Lens 1 ngày</p><p><b>Độ cận:</b> -1.00 đến -9.00</p><p><b>DIA / B.C:</b> 14.0 mm / 8.8 mm</p><p><b>Thời hạn:</b> 1 ngày</p>"},
+
+"Clear Lens cận-loạn":{name:"Breath Eye",image:"ClearLenscanloan.webp",desc:"Lens trong suốt dành cho người có thông số cận và loạn, giữ vẻ tự nhiên của mắt.",info:"<p><b>Giá:</b> 450.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Oxy Hydrogel</p><p><b>Độ cận:</b> 0.00; -0.50 đến -8.00</p><p><b>Độ loạn:</b> -0.75 đến -3.25 theo mức</p><p><b>DIA / B.C:</b> 14.2 mm / 8.8 mm</p>"},
+"Elsa cận-loạn":{name:"Brown Perfect Eye",image:"Elsacanloan.webp",desc:"Lens màu nâu kết hợp thông số cận và loạn, vừa tạo hiệu ứng thẩm mỹ vừa đáp ứng nhu cầu thị lực theo thông số phù hợp.",info:"<p><b>Giá:</b> 600.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Luxury Lens</p><p><b>Độ cận:</b> 0.00; -0.75 đến -8.00</p><p><b>Độ loạn:</b> -0.75 đến -3.25 theo mức</p><p><b>DIA / B.C:</b> 14.2 mm / 8.8 mm</p>"},
+"IRIS LENS":{name:"Iris Lens",image:"IRISLENS.webp",desc:"Dòng lens thẩm mỹ dành cho nhu cầu tạo hình và thay đổi diện mạo của tròng mắt theo thiết kế riêng.",info:"<p><b>Giá:</b> 1.000.000đ/cặp</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Lens thẩm mỹ</p><p><b>DIA:</b> 14.0–14.2 mm</p><p><b>B.C:</b> 8.8 mm</p><p><b>Thời hạn:</b> 12 tháng</p>"},
+
+"Qeye Care 140ml":{name:"Qeye Care 140ml",image:"QeyeCare140ml.webp",desc:"Dung dịch dùng trong quy trình chăm sóc và bảo quản kính áp tròng, dung tích nhỏ gọn và tiện mang theo.",info:"<p><b>Giá:</b> 70.000đ/chai</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Dung dịch chăm sóc lens</p><p><b>Dung tích:</b> 140 ml</p><p><b>Thời hạn sử dụng ghi nhận:</b> 3 tháng</p>"},
+"Qeye Care 360ml":{name:"Qeye Care 360ml",image:"QeyeCare360ml.webp",desc:"Dung dịch chăm sóc và bảo quản kính áp tròng với dung tích lớn, phù hợp nhu cầu sử dụng thường xuyên.",info:"<p><b>Giá:</b> 120.000đ/chai</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Dung dịch chăm sóc lens</p><p><b>Dung tích:</b> 360 ml</p><p><b>Thời hạn sử dụng ghi nhận:</b> 3 tháng</p>"},
+"X2 360ml":{name:"X2 360ml",image:"X2360ml.webp",desc:"Dung dịch bảo quản kính áp tròng dung tích 360 ml, phù hợp sử dụng trong quy trình chăm sóc lens hằng ngày.",info:"<p><b>Giá:</b> 150.000đ/chai</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Dung dịch bảo quản lens</p><p><b>Dung tích:</b> 360 ml</p><p><b>Thời hạn sử dụng ghi nhận:</b> 3 tháng</p>"},
+"Nhỏ mắt Qeye Care":{name:"Nhỏ mắt Qeye Care",image:"NhomatQeyeCare.webp",desc:"Sản phẩm hỗ trợ cấp ẩm khi sử dụng kính áp tròng, thiết kế nhỏ gọn và thuận tiện mang theo.",info:"<p><b>Giá:</b> 70.000đ/chai</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Nước nhỏ cấp ẩm lens</p><p><b>Dung tích:</b> 15 ml</p><p><b>Thời hạn sử dụng ghi nhận:</b> 3 tháng</p>"},
+
+"Hộp khay lớn (VIP)":{name:"Hộp khay lớn VIP",image:"HopkhaylonVIP.webp",desc:"Hộp đựng lens kích thước lớn, tiện sắp xếp và bảo quản các dụng cụ chăm sóc kính áp tròng.",info:"<p><b>Giá:</b> 60.000đ/cái</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Hộp bảo quản lens</p><p><b>Vật liệu:</b> Nhựa cao cấp</p>"},
+"Hộp nhỏ 4 món":{name:"Hộp nhỏ 4 món",image:"Hopnho4mon.webp",desc:"Bộ phụ kiện nhỏ gọn gồm các dụng cụ cơ bản để bảo quản và thao tác với kính áp tròng.",info:"<p><b>Giá:</b> 40.000đ/bộ</p><p><b>Loại:</b> Bộ phụ kiện bảo quản lens</p>"},
+"Hộp nhỏ 3 món":{name:"Hộp nhỏ 3 món",image:"Hopnho3mon.webp",desc:"Bộ phụ kiện gọn nhẹ hỗ trợ bảo quản và sử dụng kính áp tròng thuận tiện hơn.",info:"<p><b>Giá:</b> 30.000đ/bộ</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Hộp bảo quản kính áp tròng</p><p><b>Vật liệu:</b> Nhựa cao cấp</p>"},
+"Cốc rửa lens":{name:"Cốc rửa lens",image:"CocruaLens.webp",desc:"Dụng cụ hỗ trợ vệ sinh kính áp tròng, thiết kế nhỏ gọn và thuận tiện cho quá trình chăm sóc lens.",info:"<p><b>Giá:</b> 40.000đ/cái</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Phụ kiện chăm sóc lens</p><p><b>Vật liệu:</b> Nhựa cao cấp</p>"},
+"Nhíp gắp lens":{name:"Nhíp gắp lens",image:"NhipgapLens.webp",desc:"Dụng cụ hỗ trợ gắp kính áp tròng khi lấy ra hoặc đặt vào hộp bảo quản.",info:"<p><b>Giá:</b> 20.000đ/cái</p><p><b>Xuất xứ:</b> Korea</p><p><b>Loại:</b> Phụ kiện lens</p><p><b>Vật liệu:</b> Nhựa cao cấp</p>"},
+"Máy rửa lens pin":{name:"Máy rửa lens pin",image:"MayruaLenspin.webp",desc:"Thiết bị hỗ trợ vệ sinh kính áp tròng bằng cơ chế vận hành dùng pin, thuận tiện khi mang theo.",info:"<p><b>Giá:</b> 160.000đ/cái</p><p><b>Loại:</b> Thiết bị hỗ trợ vệ sinh lens</p>"},
+"Máy rửa lens sạc":{name:"Máy rửa lens sạc",image:"MayruaLenssac.webp",desc:"Thiết bị hỗ trợ vệ sinh kính áp tròng sử dụng nguồn sạc, phù hợp nhu cầu sử dụng thường xuyên.",info:"<p><b>Giá:</b> 250.000đ/cái</p><p><b>Loại:</b> Thiết bị hỗ trợ vệ sinh lens</p>"}
+
+};
+
+let vkCurrentDetailCode="";
+
+function vkOpenDetail(code){const p=vkDetailProducts[code];if(!p)return;vkCurrentDetailCode=code;document.getElementById("vk-detail-img").src=p.image;document.getElementById("vk-detail-img").alt=p.name;document.getElementById("vk-detail-name").textContent=p.name;document.getElementById("vk-detail-code").textContent="Mã: "+code;document.getElementById("vk-detail-content").innerHTML='<p class="vk-desc">'+p.desc+'</p>'+p.info;document.getElementById("vk-detail-popup").classList.add("active");document.body.classList.add("vk-popup-open")}
+function vkCloseDetail(){document.getElementById("vk-detail-popup").classList.remove("active");document.body.classList.remove("vk-popup-open")}
+function vkDetailAddCart(){if(vkCurrentDetailCode&&typeof pacoAddToCart==="function")pacoAddToCart(vkCurrentDetailCode)}
+document.addEventListener("click",function(e){const btn=e.target.closest(".vk-btn-detail");if(!btn)return;e.preventDefault();const card=btn.closest(".vk-product-card");if(!card)return;const codeEl=card.querySelector(".vk-product-code");if(codeEl)vkOpenDetail(codeEl.textContent.trim())});
+document.getElementById("vk-detail-popup").addEventListener("click",function(e){if(e.target===this)vkCloseDetail()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")vkCloseDetail()});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========================================================
+GIỎ HÀNG + HIỂN THỊ SẢN PHẨM ĐÃ CHỌN TRONG FORM
+Khôi phục cơ chế cũ: Thêm vào giỏ -> tăng số giỏ -> hiện sản phẩm trong form
+========================================================= -->
+<script>
+var pacoCartItems = {};
+
+function pacoAddToCart(tenSanPham) {
+    pacoCartItems[tenSanPham] = (pacoCartItems[tenSanPham] || 0) + 1;
+
+    var tong = 0;
+    for (var k in pacoCartItems) tong += pacoCartItems[k];
+
+    var elCount = document.getElementById('paco-cart-count');
+    if (elCount) {
+        elCount.textContent = tong;
+        elCount.style.display = tong > 0 ? 'block' : 'none';
+    }
+
+    pacoVeSpDaChon();
+}
+
+function pacoVeSpDaChon() {
+    var wrap = document.getElementById('paco-sp-da-chon-wrap');
+    var list = document.getElementById('paco-sp-da-chon-list');
+    if (!wrap || !list) return;
+
+    var ten = Object.keys(pacoCartItems);
+
+    if (ten.length === 0) {
+        wrap.style.display = 'none';
+        list.innerHTML = '';
+        pacoCapNhatHiddenSp();
+        return;
+    }
+
+    wrap.style.display = 'block';
+
+    var html = '<div style="margin:0 0 7px;font-weight:bold;color:#004a99;">Sản phẩm đã chọn:</div>';
+
+    ten.forEach(function(t) {
+        var soLuong = pacoCartItems[t];
+        var hienThi = t + (soLuong > 1 ? ' × ' + soLuong : '');
+
+        html += '<label style="display:flex;align-items:center;gap:6px;padding:4px 0;text-align:left;">'
+            + '<input type="checkbox" checked onchange="pacoCapNhatHiddenSp()">'
+            + '<span>' + hienThi + '</span>'
+            + '</label>';
+    });
+
+    list.innerHTML = html;
+    pacoCapNhatHiddenSp();
+}
+
+function pacoCapNhatHiddenSp() {
+    var hidden = document.getElementById('paco-sach-da-chon-hidden');
+    if (!hidden) return;
+
+    var list = document.getElementById('paco-sp-da-chon-list');
+    var daTick = [];
+
+    if (list) {
+        list.querySelectorAll('label').forEach(function(label) {
+            var cb = label.querySelector('input[type="checkbox"]');
+            var span = label.querySelector('span');
+            if (cb && cb.checked && span) daTick.push(span.textContent);
+        });
+    }
+
+    hidden.value = daTick.join(', ');
+}
+</script>
 
 <!-- =========================================================
 KHỐI: VÌ SAO CHỌN VK LENS?
@@ -1927,41 +2123,40 @@ Mobile: Form trên + 2 thẻ ngang dưới
      ================================================================ -->
 <div class="paco-bottom-nav">
 
-    <!-- 1. SÁCH GIẤY -> cuộn tới form đặt sách (id="datsach") -->
-    <a href="https://duongdenbinhyen.com/#datsach" class="paco-nav-item">
+    <!-- 1. SẢN PHẨM -->
+    <a href="https://lens.pacovn.com/#sanpham" class="paco-nav-item">
         <div class="paco-nav-badge badge-book">
             <svg viewBox="0 0 24 24"><path d="M4 4.5A2 2 0 0 1 6 3h8v18H6a2 2 0 0 1-2-1.5z" fill="#e0783c"/><path d="M20 4.5A2 2 0 0 0 18 3h-4v18h4a2 2 0 0 0 2-1.5z" fill="#c85a2a"/></svg>
         </div>
-        <span class="paco-nav-label">Mua sách giấy</span>
+        <span class="paco-nav-label">Sản phẩm</span>
     </a>
 
-    <!-- 2. EBOOK -> cuộn tới khối ebook (id="ebook") -->
-    <a href="https://duongdenbinhyen.com/#ebook" class="paco-nav-item">
+    <!-- 2. KHUYẾN MÃI -->
+    <a href="https://lens.pacovn.com/#khuyenmai" class="paco-nav-item">
         <div class="paco-nav-badge badge-ebook">
-            <svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2" fill="#2f80c4"/><rect x="7.5" y="5.5" width="9" height="10.5" rx="1" fill="#eaf4ff"/><line x1="9" y1="18.5" x2="15" y2="18.5" stroke="#eaf4ff" stroke-width="1.4"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M4 12 12 4l8 8-8 8z" fill="#2f80c4"/><circle cx="12" cy="12" r="2.2" fill="#ffffff"/></svg>
         </div>
-        <span class="paco-nav-label">Mua Ebook</span>
+        <span class="paco-nav-label">Khuyến mãi</span>
     </a>
 
-    <!-- 3. TRANG CHỦ -> về trang chủ (mục giữa, khối tròn gradient nổi lên) -->
-    <a href="https://duongdenbinhyen.com/" class="paco-nav-item">
+    <!-- 3. TRANG CHỦ -->
+    <a href="https://lens.pacovn.com/" class="paco-nav-item">
         <div class="paco-nav-center-circle">
             <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v10h5v-6h4v6h5V10z" fill="#ffffff"/></svg>
         </div>
         <span class="paco-nav-label">Trang chủ</span>
     </a>
 
-    <!-- 4. LIÊN HỆ -> cuộn tới khối địa chỉ chân trang (id="lienhe") -->
-    <a href="https://duongdenbinhyen.com/#lienhe" class="paco-nav-item">
+    <!-- 4. LIÊN HỆ -->
+    <a href="https://lens.pacovn.com/#lienhe" class="paco-nav-item">
         <div class="paco-nav-badge badge-contact">
             <svg viewBox="0 0 24 24"><path d="M4 13a8 8 0 0 1 16 0" fill="none" stroke="#5b6fd6" stroke-width="2"/><rect x="3" y="13" width="4.5" height="7" rx="2" fill="#5b6fd6"/><rect x="16.5" y="13" width="4.5" height="7" rx="2" fill="#5b6fd6"/><path d="M7.5 20v.5a3 3 0 0 0 3 3H12" fill="none" stroke="#5b6fd6" stroke-width="1.6" stroke-linecap="round"/></svg>
         </div>
         <span class="paco-nav-label">Liên hệ</span>
     </a>
 
-    <!-- 5. GIỎ HÀNG -> bấm vào sẽ về thẳng form đặt sách (#datsach). Số màu đỏ (id="paco-cart-count")
-         tự tăng khi khách bấm "Thêm vào giỏ" ở khối TÁC PHẨM MỚI phía trên (xem hàm pacoAddToCart cuối trang). -->
-    <a href="https://duongdenbinhyen.com/#datsach" class="paco-nav-item">
+    <!-- 5. GIỎ HÀNG -->
+    <a href="https://lens.pacovn.com/#datsach" class="paco-nav-item">
         <div class="paco-nav-badge badge-cart" style="position:relative;">
             <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z" fill="#e0611f"/><path d="M6 6 5 3H2" fill="none" stroke="#e0611f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="#e0611f"/><circle cx="18" cy="20" r="1.4" fill="#e0611f"/></svg>
             <span id="paco-cart-count" style="display:none;position:absolute;top:-4px;right:-4px;background:#b30000;color:#ffffff;font-family:'Times New Roman',serif;font-size:11px;font-weight:bold;min-width:16px;height:16px;line-height:16px;border-radius:8px;text-align:center;padding:0 3px;">0</span>
