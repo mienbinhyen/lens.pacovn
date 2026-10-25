@@ -369,7 +369,7 @@ background-image:
             Chỉ một thay đổi nhỏ ở đôi mắt cũng có thể khiến cả gương mặt trở nên sáng hơn và cuốn hút hơn. VK Lens mang đến các mẫu kính áp tròng Korea với màu sắc tự nhiên, đường vân tinh tế và hiệu ứng long lanh vừa đủ, giúp ánh nhìn có chiều sâu nhưng vẫn giữ được nét dịu dàng, thanh thoát.
         </p>
 
-        <h2>KÍNH ÁP TRÒNG CHÍNH HÃNG</h2>
+        
 
     </div>
 </section>
@@ -2236,7 +2236,7 @@ window.addEventListener('load',function(){
     function checkLock(){
         if(Date.now()<lockUntil){
             submitBtn.disabled=true;submitBtn.style.backgroundColor="#9e9e9e";submitBtn.style.lineHeight="1.0";
-            submitBtn.innerHTML="BẠN ĐÃ ĐẶT QUÁ GIỚI HẠN<br data-qlid="134"><span style='font-size:12px;' data-qlid="135">Đặt trực tiếp: 09 33 22 33 01</span>";
+            submitBtn.innerHTML="BẠN ĐÃ ĐẶT QUÁ GIỚI HẠN<br data-qlid="134" data-qlid="134"><span style='font-size:12px;' data-qlid="135" data-qlid="135">Đặt trực tiếp: 09 33 22 33 01</span>";
             return true;
         }return false;
     }
@@ -2244,7 +2244,7 @@ window.addEventListener('load',function(){
     function renderGuard(){
         var guardBox=document.getElementById('paco-guard-box'),code=Math.floor(1000+Math.random()*9000);
         if(!guardBox){
-            var html='<div id="paco-guard-box" style="margin:10px auto;width:100%;text-align:center;font-family:sans-serif;" data-qlid="136"><div style="color:#000;font-size:13px;font-weight:bold;margin-bottom:10px;" data-qlid="137">Nhập mã bảo vệ - Bạn đang đặt lần 2</div><div style="display:flex;gap:10px;justify-content:center;align-items:stretch;" data-qlid="138"><div id="display-code" style="background:#eee;padding:0 15px;font-weight:bold;border:1px solid #000;border-radius:4px;display:flex;align-items:center;font-size:16px;min-height:38px;color:#000;" data-qlid="139">'+code+'</div><input type="number" id="paco-verify" placeholder="Nhập mã" required style="flex:1;max-width:120px;padding:8px;border:1px solid #000;border-radius:4px;text-align:center;font-size:14px;height:38px;box-sizing:border-box;color:#000;" data-qlid="140"></div></div>';
+            var html='<div id="paco-guard-box" style="margin:10px auto;width:100%;text-align:center;font-family:sans-serif;" data-qlid="136" data-qlid="136"><div style="color:#000;font-size:13px;font-weight:bold;margin-bottom:10px;" data-qlid="137" data-qlid="137">Nhập mã bảo vệ - Bạn đang đặt lần 2</div><div style="display:flex;gap:10px;justify-content:center;align-items:stretch;" data-qlid="138" data-qlid="138"><div id="display-code" style="background:#eee;padding:0 15px;font-weight:bold;border:1px solid #000;border-radius:4px;display:flex;align-items:center;font-size:16px;min-height:38px;color:#000;" data-qlid="139" data-qlid="139">'+code+'</div><input type="number" id="paco-verify" placeholder="Nhập mã" required style="flex:1;max-width:120px;padding:8px;border:1px solid #000;border-radius:4px;text-align:center;font-size:14px;height:38px;box-sizing:border-box;color:#000;" data-qlid="140" data-qlid="140"></div></div>';
             submitBtn.insertAdjacentHTML('beforebegin',html);
         }else{document.getElementById('display-code').innerText=code;document.getElementById('paco-verify').value="";}
         submitBtn.setAttribute('data-code',code);
@@ -2416,5 +2416,6 @@ body{min-width:0}.paco-page-wrap{width:100%;max-width:100%}
 <script src="https://ai.pacovn.com/widget/pacoai-widget.js" data-ma-nhung="pacoai-2-9533dd104ac6a25f" data-do-rong-noi-dung="900" defer=""></script>
 
 
-</div></body>
+</div>
+</body>
 </html>
