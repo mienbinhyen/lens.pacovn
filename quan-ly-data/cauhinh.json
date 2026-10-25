@@ -1,0 +1,33 @@
+{
+ "v": 1,
+ "repo": {
+  "owner": "mienbinhyen",
+  "name": "lens.pacovn",
+  "branch": "main"
+ },
+ "site": "https://lens.pacovn.com/",
+ "siteName": "Vk Lens",
+ "token": {
+  "iv": "6uWW7WTNZc/NlODc",
+  "ct": "ScH8BSP+osNJt5sht+Q7kmNOQGlB60Q7hlpDtjuwPGvaXWzGOArpVNWsilQMQo4zcXKMuQWy9phoCIoS0yu3jYCTm9x+kNbTdBHW6puQbLUgv7ZUaF0Ev/KkrD8pEHFduGIDUKqn0dZvhFC0jQ=="
+ },
+ "lock": {
+  "salt": "YGS75WqbRC4TBjvbHMRucw==",
+  "iv": "QFzELAAWwFwMQ3OD",
+  "ct": "7ephAuU1cjdbsG6XoWZY7A+B"
+ },
+ "users": [
+  {
+   "u": "lens",
+   "name": "LENS.PACOVN",
+   "role": "admin",
+   "active": true,
+   "salt": "P8VFhNhTcZ8Jl/ZVcz1osg==",
+   "iv": "WA4T+1LsQo4FeG/H",
+   "ct": "fevG5cnwC3CC5Qwk94RwsFqwZKuQtoD/TH6X1hVDGCt4euXeS4PLh/2sT5iVkhk0"
+  }
+ ],
+ "locks": {},
+ "kw": {},
+ "created": "2026-10-25T21:23:02+07:00"
+}
